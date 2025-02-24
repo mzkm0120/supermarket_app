@@ -14,6 +14,9 @@
 
     <body>
         <div id="map"></div>
+        <div id="supermarket" class="ml-2">
+            <h1>スーパーマーケット一覧</h1>
+        </div>
     </body>
     <script>
         (g => {
@@ -150,7 +153,8 @@
                 SearchNearbyRankPreference
             } = await google.maps.importLibrary("places");
             const {
-                AdvancedMarkerElement
+                AdvancedMarkerElement,
+                PinElement
             } = await google.maps.importLibrary("marker");
             const request = {
                 fields: ["displayName", "location", "businessStatus", "websiteURI"],
@@ -181,10 +185,15 @@
                     listSupermarketURI.href = place.Eg.websiteURI;
                     listSupermarket.appendChild(listSupermarketURI);
                     listSupermarkets.appendChild(listSupermarket);
+                    // マーカーの色を変更
+                    const pinBackground = new PinElement({
+                        background: "#34A853",
+                    });
                     const markerView = new AdvancedMarkerElement({
                         map,
                         position: place.location,
                         title: place.displayName,
+                        content: pinBackground.element,
                     });
                     const infoWindow = new google.maps.InfoWindow({
                         content: `<strong>${place.displayName}</strong>`,
@@ -195,7 +204,8 @@
                     bounds.extend(place.location);
                 });
                 map.fitBounds(bounds);
-                document.getElementById("map").after(listSupermarkets);
+                document.getElementById("supermarket").after(listSupermarkets);
+                listSupermarkets.style.marginLeft = "20px";
             } else {
                 console.log("近くにスーパーマーケットがありません");
             }
